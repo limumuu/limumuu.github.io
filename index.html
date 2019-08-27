@@ -62,6 +62,64 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-Github博客----别再fork了，自己新建也不难" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/" class="article-date">
+  <time datetime="2019-08-27T06:14:58.956Z" itemprop="datePublished">2019-08-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>我参考的<a href="https://www.jianshu.com/p/4f56cf990bba" target="_blank" rel="noopener">链接</a>，写的比较详细了<br>具体步骤和一些细节：<br>1、下载==node.js==，==git==<br>建议把这两个东西放到一个文件夹里，按以上顺序下载并安装。<br>在cmd里面直接输入<code>node -v</code>和<code>npm -v</code>显示版本号说明node.js有了<br>cmd输入<code>git --version</code>同样出现版本号则git也有了<br>2、安装==hexo==<br>在刚才新建的文件夹里单独搞一个文件夹来安装hexo，cmd需要cd到hexo的文件夹。<br>输入<code>npm install hexo -g</code>开始安装Hexo<br>输入<code>hexo -v</code>检查hexo是否安装成功<br>输入<code>hexo init</code>初始化该文件夹<br>输入<code>npm install</code>安装所需要的组件<br>输入<code>hexo g</code>首次体验Hexo<br>输入<code>hexo s</code>在浏览器打<a href="http://localhost:4000/，这就是你的博客了" target="_blank" rel="noopener">http://localhost:4000/，这就是你的博客了</a><br>3、将Hexo与Github page联系起来<br>注册==Github==账号，新建一个博客仓库<br>在你hexo文件夹的空白处单击鼠标右键，点击<code>Git Base Here</code>，输入<code>git config --global user.name &quot;name&quot;</code>和<code>git config --global user.email &quot;email@xxx&quot;</code>来配置自己的用户名和邮箱<br>输入<code>cd ~/.ssh</code>检查是否有.ssh的文件夹<br>没有的话输入<code>ssh-keygen -t rsa -C “email@xxx”</code><br>输入<code>eval &quot;$(ssh-agent -s)&quot;</code><br>输入<code>ssh-add ~/.ssh/id_rsa</code><br>在电脑的C:\Users\Administrator.ssh找到id_rsa.pub文件<br>Github-setting-new ssh key把上述文件内容粘进去，名为blog<br>输入<code>ssh -T git@github.com</code>，出现Hi~，则添加ssh成功<br><img src="https://img-blog.csdnimg.cn/20190826212140858.png" alt="在这里插入图片描述"><br>重做系统之后又搞了一遍！<br>4、配置==Deployment==<br>==我不知道我这步有没有问题！==<br>打开hexo文件夹，里面有_config.yml，在最后加上两行repository和branch<br>现在就可以写博客了<br>怎么写方便呢<br>你可以使用hexo的编辑器<br>我是在其他平台上先写，然后导出.md文档，粘到你hexo文件夹下的source/_posts文件夹<br>打开cmd，cd到hexo下<br>输入<code>npm install hexo-deployer-git --save</code><br>输入<code>hexo d -g</code><br>等个几分钟进你github.io的地址就能看到更新的博客了<br>5、为了其他一些乱七八糟事情的方便最好了解markdown的语法<br>以及在终端新建博客要输入<code>hexo new post “博客名”</code></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/27/Github博客----别再fork了，自己新建也不难/" data-id="cjztfybr60000p8rh2dje2odk" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-PWN-bof" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/26/PWN-bof/" class="article-date">
+  <time datetime="2019-08-26T08:47:00.450Z" itemprop="datePublished">2019-08-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="题目给出一个PWN文件和两个netcat端口"><a href="#题目给出一个PWN文件和两个netcat端口" class="headerlink" title="题目给出一个PWN文件和两个netcat端口"></a>题目给出一个PWN文件和两个netcat端口</h1><h1 id="解题步骤"><a href="#解题步骤" class="headerlink" title="解题步骤"></a>解题步骤</h1><h2 id="1、ubuntu"><a href="#1、ubuntu" class="headerlink" title="1、ubuntu"></a>1、ubuntu</h2><p>-&gt;下载PWN文件，找到文件所在位置打开终端-&gt; file命令<br><img src="https://img-blog.csdnimg.cn/20190823200034607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="查看文件"><br>看到是一个32位的ELF文件</p>
+<h2 id="2、回win10-，分析漏洞类型"><a href="#2、回win10-，分析漏洞类型" class="headerlink" title="2、回win10 ，分析漏洞类型"></a>2、回win10 ，分析漏洞类型</h2><p>把pwn文件拖进32位的ida<br><img src="https://img-blog.csdnimg.cn/20190823200408727.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="拖进"><br>查看main函数的反汇编代码<br><img src="https://img-blog.csdnimg.cn/20190824151621167.png" alt="在这里插入图片描述"><br>sub_8048573<br><img src="https://img-blog.csdnimg.cn/20190824151732625.png" alt="在这里插入图片描述"><br>用到read函数，看一下汇编代码<br><img src="https://img-blog.csdnimg.cn/20190826161019520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="3、解题方法"><a href="#3、解题方法" class="headerlink" title="3、解题方法"></a>3、解题方法</h2><p>构造payload=’a’<em>个数+返回地址，有/bin/sh的要加上’b’</em>个数+/bin/sh的地址<br>a的个数为开辟的28个空间+4个ebp的空间（32位）<br>返回地址：发现main函数可以直接调用system函数（sub_ 804854A），在ida中找到plt的system的起始地址。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190826134711733.png" alt="在这里插入图片描述"><br>b的个数是4<br>在ubuntu里查看/bin/sh的地址<br><img src="https://img-blog.csdnimg.cn/20190826163238936.png" alt="在这里插入图片描述"><br>则payload=’a’<em>32+p32(add1)+’b’</em>4+p32(add2)</p>
+<h2 id="4、运行脚本"><a href="#4、运行脚本" class="headerlink" title="4、运行脚本"></a>4、运行脚本</h2><p> 在ubuntu中新建一个.py文件，按以下格式写脚本。<br><img src="https://img-blog.csdnimg.cn/20190826135429335.png" alt="在这里插入图片描述"><br>在虚拟机调试，可以查看文件及flag<br><img src="https://img-blog.csdnimg.cn/20190826135129555.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/26/PWN-bof/" data-id="cjzsenzp80000mkrh7kfl6do3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-《软件安全》" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2019/07/16/《软件安全》/" class="article-date">
@@ -86,44 +144,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/16/《软件安全》/" data-id="cjy5lnvmj0000zkqfcpyodndh" class="article-share-link">Share</a>
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-还能行不？" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2019/07/16/还能行不？/" class="article-date">
-  <time datetime="2019-07-16T01:09:41.000Z" itemprop="datePublished">2019-07-16</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2019/07/16/还能行不？/">还能行不？</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>asdfghjkl</p>
-<h3 id="zxcvbnm"><a href="#zxcvbnm" class="headerlink" title="zxcvbnm"></a>zxcvbnm</h3><h4 id="qwertyuiop"><a href="#qwertyuiop" class="headerlink" title="qwertyuiop"></a>qwertyuiop</h4>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/16/还能行不？/" data-id="cjy54h4oo0001n8qftby12d1k" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/16/《软件安全》/" data-id="cjzsenzps0002mkrh2oxzhnhk" class="article-share-link">Share</a>
       
       
     </footer>
@@ -172,7 +193,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/07/15/hello-world/" data-id="cjy54h4os0002n8qf60ov8ji0" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/07/15/hello-world/" data-id="cjzsenzpg0001mkrh9td7ncjb" class="article-share-link">Share</a>
       
       
     </footer>
@@ -200,7 +221,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">Archives</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li></ul>
     </div>
   </div>
 
@@ -213,11 +234,15 @@
       <ul>
         
           <li>
-            <a href="/2019/07/16/《软件安全》/">(no title)</a>
+            <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/">(no title)</a>
           </li>
         
           <li>
-            <a href="/2019/07/16/还能行不？/">还能行不？</a>
+            <a href="/2019/08/26/PWN-bof/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/16/《软件安全》/">(no title)</a>
           </li>
         
           <li>

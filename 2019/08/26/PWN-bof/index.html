@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>limumuu_bloggggg</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="题目给出一个PWN文件和两个netcat端口解题步骤1、ubuntu-&amp;gt;下载PWN文件，找到文件所在位置打开终端-&amp;gt; file命令看到是一个32位的ELF文件 2、回win10 ，分析漏洞类型把pwn文件拖进32位的ida查看main函数的反汇编代码sub_8048573用到read函数，看一下汇编代码 3、解题方法构造payload=’a’个数+返回地址，有/bin/sh的要加上’b">
+<meta property="og:type" content="article">
+<meta property="og:title" content="limumuu_bloggggg">
+<meta property="og:url" content="http://yoursite.com/2019/08/26/PWN-bof/index.html">
+<meta property="og:site_name" content="limumuu_bloggggg">
+<meta property="og:description" content="题目给出一个PWN文件和两个netcat端口解题步骤1、ubuntu-&amp;gt;下载PWN文件，找到文件所在位置打开终端-&amp;gt; file命令看到是一个32位的ELF文件 2、回win10 ，分析漏洞类型把pwn文件拖进32位的ida查看main函数的反汇编代码sub_8048573用到read函数，看一下汇编代码 3、解题方法构造payload=’a’个数+返回地址，有/bin/sh的要加上’b">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190823200034607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190823200408727.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190824151621167.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190824151732625.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826161019520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826134711733.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826163238936.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826135429335.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826135129555.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2019-08-26T08:38:09.061Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="limumuu_bloggggg">
+<meta name="twitter:description" content="题目给出一个PWN文件和两个netcat端口解题步骤1、ubuntu-&amp;gt;下载PWN文件，找到文件所在位置打开终端-&amp;gt; file命令看到是一个32位的ELF文件 2、回win10 ，分析漏洞类型把pwn文件拖进32位的ida查看main函数的反汇编代码sub_8048573用到read函数，看一下汇编代码 3、解题方法构造payload=’a’个数+返回地址，有/bin/sh的要加上’b">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190823200034607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
+  
+    <link rel="alternate" href="/atom.xml" title="limumuu_bloggggg" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">limumuu_bloggggg</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://yoursite.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-PWN-bof" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/08/26/PWN-bof/" class="article-date">
+  <time datetime="2019-08-26T08:47:00.450Z" itemprop="datePublished">2019-08-26</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="题目给出一个PWN文件和两个netcat端口"><a href="#题目给出一个PWN文件和两个netcat端口" class="headerlink" title="题目给出一个PWN文件和两个netcat端口"></a>题目给出一个PWN文件和两个netcat端口</h1><h1 id="解题步骤"><a href="#解题步骤" class="headerlink" title="解题步骤"></a>解题步骤</h1><h2 id="1、ubuntu"><a href="#1、ubuntu" class="headerlink" title="1、ubuntu"></a>1、ubuntu</h2><p>-&gt;下载PWN文件，找到文件所在位置打开终端-&gt; file命令<br><img src="https://img-blog.csdnimg.cn/20190823200034607.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="查看文件"><br>看到是一个32位的ELF文件</p>
+<h2 id="2、回win10-，分析漏洞类型"><a href="#2、回win10-，分析漏洞类型" class="headerlink" title="2、回win10 ，分析漏洞类型"></a>2、回win10 ，分析漏洞类型</h2><p>把pwn文件拖进32位的ida<br><img src="https://img-blog.csdnimg.cn/20190823200408727.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="拖进"><br>查看main函数的反汇编代码<br><img src="https://img-blog.csdnimg.cn/20190824151621167.png" alt="在这里插入图片描述"><br>sub_8048573<br><img src="https://img-blog.csdnimg.cn/20190824151732625.png" alt="在这里插入图片描述"><br>用到read函数，看一下汇编代码<br><img src="https://img-blog.csdnimg.cn/20190826161019520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+<h2 id="3、解题方法"><a href="#3、解题方法" class="headerlink" title="3、解题方法"></a>3、解题方法</h2><p>构造payload=’a’<em>个数+返回地址，有/bin/sh的要加上’b’</em>个数+/bin/sh的地址<br>a的个数为开辟的28个空间+4个ebp的空间（32位）<br>返回地址：发现main函数可以直接调用system函数（sub_ 804854A），在ida中找到plt的system的起始地址。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190826134711733.png" alt="在这里插入图片描述"><br>b的个数是4<br>在ubuntu里查看/bin/sh的地址<br><img src="https://img-blog.csdnimg.cn/20190826163238936.png" alt="在这里插入图片描述"><br>则payload=’a’<em>32+p32(add1)+’b’</em>4+p32(add2)</p>
+<h2 id="4、运行脚本"><a href="#4、运行脚本" class="headerlink" title="4、运行脚本"></a>4、运行脚本</h2><p> 在ubuntu中新建一个.py文件，按以下格式写脚本。<br><img src="https://img-blog.csdnimg.cn/20190826135429335.png" alt="在这里插入图片描述"><br>在虚拟机调试，可以查看文件及flag<br><img src="https://img-blog.csdnimg.cn/20190826135129555.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://yoursite.com/2019/08/26/PWN-bof/" data-id="cjzsenzp80000mkrh7kfl6do3" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          (no title)
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2019/07/16/《软件安全》/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title"></div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+
+  
+    
+
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/08/">August 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/07/">July 2019</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/08/26/PWN-bof/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/16/《软件安全》/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/2019/07/15/hello-world/">Hello World</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 lmm<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
