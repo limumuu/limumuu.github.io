@@ -5,14 +5,15 @@
   
 
   
-  <title>limumuu_bloggggg</title>
+  <title>PWN-ROP | limumuu_bloggggg</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title：PWN-ROP题目：给出PWN2文件和libc发生栈溢出。 查看：文件类型及其保护方法找system和bin_sh都么有所以只能利用libc文件 理论 思路由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话 计算偏移量=92但是在gdb里得出offset=91，这是错的。在ida中查看main函数的汇编代码的一部分，开辟了5">
+  <meta name="description" content="题目：给出PWN2文件和libc发生栈溢出。 查看：文件类型及其保护方法找system和bin_sh都么有所以只能利用libc文件 理论 思路由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话 计算偏移量=92但是在gdb里得出offset=91，这是错的。在ida中查看main函数的汇编代码的一部分，开辟了58h个空间，加上esp的4个">
+<meta name="keywords" content="PWN">
 <meta property="og:type" content="article">
-<meta property="og:title" content="limumuu_bloggggg">
+<meta property="og:title" content="PWN-ROP">
 <meta property="og:url" content="http://yoursite.com/2019/08/27/PWN-ROP (1)/index.html">
 <meta property="og:site_name" content="limumuu_bloggggg">
-<meta property="og:description" content="title：PWN-ROP题目：给出PWN2文件和libc发生栈溢出。 查看：文件类型及其保护方法找system和bin_sh都么有所以只能利用libc文件 理论 思路由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话 计算偏移量=92但是在gdb里得出offset=91，这是错的。在ida中查看main函数的汇编代码的一部分，开辟了5">
+<meta property="og:description" content="题目：给出PWN2文件和libc发生栈溢出。 查看：文件类型及其保护方法找system和bin_sh都么有所以只能利用libc文件 理论 思路由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话 计算偏移量=92但是在gdb里得出offset=91，这是错的。在ida中查看main函数的汇编代码的一部分，开辟了58h个空间，加上esp的4个">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190827200855113.png">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190827102754531.png">
@@ -28,10 +29,10 @@
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190827091320111.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190827091358163.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
 <meta property="og:image" content="https://img-blog.csdnimg.cn/20190827094411755.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70">
-<meta property="og:updated_time" content="2019-08-27T12:18:01.848Z">
+<meta property="og:updated_time" content="2019-08-27T12:25:48.525Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="limumuu_bloggggg">
-<meta name="twitter:description" content="title：PWN-ROP题目：给出PWN2文件和libc发生栈溢出。 查看：文件类型及其保护方法找system和bin_sh都么有所以只能利用libc文件 理论 思路由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话 计算偏移量=92但是在gdb里得出offset=91，这是错的。在ida中查看main函数的汇编代码的一部分，开辟了5">
+<meta name="twitter:title" content="PWN-ROP">
+<meta name="twitter:description" content="题目：给出PWN2文件和libc发生栈溢出。 查看：文件类型及其保护方法找system和bin_sh都么有所以只能利用libc文件 理论 思路由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话 计算偏移量=92但是在gdb里得出offset=91，这是错的。在ida中查看main函数的汇编代码的一部分，开辟了58h个空间，加上esp的4个">
 <meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190827200855113.png">
   
     <link rel="alternate" href="/atom.xml" title="limumuu_bloggggg" type="application/atom+xml">
@@ -89,10 +90,19 @@
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      PWN-ROP
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <hr>
-<h2 id="title：PWN-ROP"><a href="#title：PWN-ROP" class="headerlink" title="title：PWN-ROP"></a>title：PWN-ROP</h2><h1 id="题目：给出PWN2文件和libc"><a href="#题目：给出PWN2文件和libc" class="headerlink" title="题目：给出PWN2文件和libc"></a>题目：给出PWN2文件和libc</h1><p><img src="https://img-blog.csdnimg.cn/20190827200855113.png" alt="在这里插入图片描述"><br>发生栈溢出。</p>
+        <h1 id="题目：给出PWN2文件和libc"><a href="#题目：给出PWN2文件和libc" class="headerlink" title="题目：给出PWN2文件和libc"></a>题目：给出PWN2文件和libc</h1><p><img src="https://img-blog.csdnimg.cn/20190827200855113.png" alt="在这里插入图片描述"><br>发生栈溢出。</p>
 <h1 id="查看："><a href="#查看：" class="headerlink" title="查看："></a>查看：</h1><p>文件类型及其保护方法<br><img src="https://img-blog.csdnimg.cn/20190827102754531.png" alt="在这里插入图片描述"><br>找system和bin_sh都么有<br><img src="https://img-blog.csdnimg.cn/2019082710294358.png" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190827103025672.png" alt="在这里插入图片描述"><br>所以只能利用libc文件</p>
 <h1 id="理论"><a href="#理论" class="headerlink" title="理论"></a>理论</h1><p><img src="https://img-blog.csdnimg.cn/20190827095007700.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"><br><img src="https://img-blog.csdnimg.cn/20190827094717207.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L011TXVMZWVf,size_16,color_FFFFFF,t_70" alt="在这里插入图片描述"></p>
 <h1 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h1><p>由于libc的延迟绑定机制，需要选择已经==执行过的函数==作为泄漏函数，这里我们选择put()//输出一句话</p>
@@ -124,6 +134,8 @@
       <a data-url="http://yoursite.com/2019/08/27/PWN-ROP (1)/" data-id="cjztstgd00000r0rhr60mafwd" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/PWN/">PWN</a></li></ul>
+
     </footer>
   </div>
   
@@ -133,7 +145,7 @@
   
     <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/" id="article-nav-older" class="article-nav-link-wrap">
       <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title"></div>
+      <div class="article-nav-title">Github博客——别再fork了，自己新建也不难。</div>
     </a>
   
 </nav>
@@ -149,9 +161,23 @@
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/PWN/">PWN</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/books/">books</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/others/">others</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/PWN/" style="font-size: 20px;">PWN</a> <a href="/tags/books/" style="font-size: 10px;">books</a> <a href="/tags/others/" style="font-size: 10px;">others</a>
+    </div>
+  </div>
+
   
     
   <div class="widget-wrap">
@@ -170,23 +196,19 @@
       <ul>
         
           <li>
-            <a href="/2019/08/27/PWN-ROP (1)/">(no title)</a>
+            <a href="/2019/08/27/PWN-ROP (1)/">PWN-ROP</a>
           </li>
         
           <li>
-            <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/">(no title)</a>
+            <a href="/2019/08/27/Github博客----别再fork了，自己新建也不难/">Github博客——别再fork了，自己新建也不难。</a>
           </li>
         
           <li>
-            <a href="/2019/08/26/PWN-bof/">(no title)</a>
+            <a href="/2019/08/26/PWN-bof/">PWN-bof</a>
           </li>
         
           <li>
-            <a href="/2019/07/16/《软件安全》/">(no title)</a>
-          </li>
-        
-          <li>
-            <a href="/2019/07/15/hello-world/">Hello World</a>
+            <a href="/2019/07/16/《软件安全》/">《软件安全》</a>
           </li>
         
       </ul>
